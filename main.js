@@ -1,82 +1,83 @@
-let audioCtx;
-let activeOscillators = {};
+var audioCtx;
+var globalGain;
+activeOscillators = {}
 
 const playButton = document.querySelector("button");
 
 const keyboardFrequencyMap = {
-  '90': 261.63,
-  '83': 277.18,
-  '88': 293.66,
-  '68': 311.13,
-  '67': 329.63,
-  '86': 349.23,
-  '71': 369.99,
-  '66': 392.00,
-  '72': 415.30,
-  '78': 440.00,
-  '74': 466.16,
-  '77': 493.88,
-  '81': 523.25,
-  '50': 554.37,
-  '87': 587.33,
-  '51': 622.25,
-  '69': 659.26,
-  '82': 698.46,
-  '53': 739.99,
-  '84': 783.99,
-  '54': 830.61,
-  '89': 880.00,
-  '55': 932.33,
-  '85': 987.77
-};
+  '90': 261.625565300598634,
+  '83': 277.182630976872096,
+  '88': 293.664767917407560,
+  '68': 311.126983722080910,
+  '67': 329.627556912869929,
+  '86': 349.228231433003884,
+  '71': 369.994422711634398,
+  '66': 391.995435981749294,
+  '72': 415.304697579945138,
+  '78': 440.000000000000000,
+  '74': 466.163761518089916,
+  '77': 493.883301256124111,
+  '81': 523.251130601197269,
+  '50': 554.365261953744192,
+  '87': 587.329535834815120,
+  '51': 622.253967444161821,
+  '69': 659.255113825739859,
+  '82': 698.456462866007768,
+  '53': 739.988845423268797,
+  '84': 783.990871963498588,
+  '54': 830.609395159890277,
+  '89': 880.000000000000000,
+  '55': 932.327523036179832,
+  '85': 987.766602512248223
+}
 
-playButton.addEventListener("click", async () => {
-  if (!audioCtx) {
+playButton.addEventListener("click", async function(){
+  if (!audioCtx){
     audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-  }
-  if (audioCtx.state !== "running") {
-    await audioCtx.resume();
-  }
-  playButton.textContent = "Audio Ready";
-});
 
-window.addEventListener("keydown", keyDown);
-window.addEventListener("keyup", keyUp);
+    globalGain = audioCtx.createGain();
+    globalGain.gain.setValueAtTime(0.8, audioCtx.currentTime);
+    globalGain.connect(audioCtx.destination);
+  }
+  await audioCtx.resume();
+})
+
+window.addEventListener('keydown', keyDown, false);
+window.addEventListener('keyup', keyUp, false);
 
 function keyDown(event) {
-  if (!audioCtx) return;
-
-  const key = event.which.toString();
-  if (!keyboardFrequencyMap[key]) return;
-
-  if (event.repeat) return;
-
-  if (!activeOscillators[key]) {
+  const key = (event.detail || event.which).toString();
+  if (keyboardFrequencyMap[key] && !activeOscillators[key]) {
     playNote(key);
   }
 }
 
 function keyUp(event) {
-  if (!audioCtx) return;
+  const key = (event.detail || event.which).toString();
+  if (keyboardFrequencyMap[key] && activeOscillators[key]) {
+    const voice = activeOscillators[key];
+    const now = audioCtx.currentTime;
 
-  const key = event.which.toString();
-  if (!keyboardFrequencyMap[key]) return;
+    voice.gainNode.gain.cancelScheduledValues(now);
+    voice.gainNode.gain.setTargetAtTime(0.0001, now, 0.05);
+    voice.osc.stop(now + 0.2);
 
-  if (activeOscillators[key]) {
-    activeOscillators[key].stop();
     delete activeOscillators[key];
   }
 }
 
 function playNote(key) {
   const osc = audioCtx.createOscillator();
-  osc.frequency.setValueAtTime(
-    keyboardFrequencyMap[key],
-    audioCtx.currentTime
-  );
-  osc.type = "sine";
-  osc.connect(audioCtx.destination);
-  osc.start();
+  const gainNode = audioCtx.createGain();
 
-  activeOscillators[key] = osc;
+  osc.frequency.setValueAtTime(keyboardFrequencyMap[key], audioCtx.currentTime)
+  osc.type = 'sine'
+  osc.connect(gainNode);
+  gainNode.connect(globalGain);
+
+  gainNode.gain.setValueAtTime(0.0001, audioCtx.currentTime);
+  gainNode.gain.exponentialRampToValueAtTime(0.2, audioCtx.currentTime + 0.01);
+
+  osc.start();
+  activeOscillators[key] = { osc, gainNode }
 }
