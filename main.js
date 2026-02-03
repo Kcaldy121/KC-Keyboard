@@ -24,17 +24,28 @@ document.addEventListener("DOMContentLoaded", function () {
       globalGain = audioCtx.createGain();
       globalGain.gain.setValueAtTime(0.8, audioCtx.currentTime);
       globalGain.connect(audioCtx.destination);
+    }
 
+    await audioCtx.resume();
+
+    if (!meowBuffer) {
       await loadMeow();
     }
-    await audioCtx.resume();
+
     startBtn.textContent = "Audio Ready";
   });
 
   async function loadMeow() {
-    const resp = await fetch("meow.wav");
-    const arrayBuf = await resp.arrayBuffer();
-    meowBuffer = await audioCtx.decodeAudioData(arrayBuf);
+    try {
+      const resp = await fetch("meow.wav", { cache: "no-store" });
+      if (!resp.ok) throw new Error("fetch failed: " + resp.status);
+
+      const arrayBuf = await resp.arrayBuffer();
+      meowBuffer = await audioCtx.decodeAudioData(arrayBuf);
+      console.log("meow loaded, seconds:", meowBuffer.duration);
+    } catch (e) {
+      console.error("meow load error:", e);
+    }
   }
 
   window.addEventListener("keydown", keyDown);
@@ -98,7 +109,10 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   function playMeowSample(key) {
-    if (!meowBuffer) return;
+    if (!meowBuffer) {
+      console.log("meowBuffer not loaded yet");
+      return;
+    }
 
     const now = audioCtx.currentTime;
 
