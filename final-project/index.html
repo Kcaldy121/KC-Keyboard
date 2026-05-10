@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+  <meta charset="UTF-8" />
+
+  <title>
+    Rhythm Transcription System
+  </title>
+
+  <link
+    rel="stylesheet"
+    href="style.css"
+  />
+
+  <!-- VexFlow -->
+  <script src="https://cdn.jsdelivr.net/npm/vexflow@4.2.3/build/cjs/vexflow.js"></script>
+
+</head>
+
+<body tabindex="0">
+
+  <div class="container">
+<!-- NAVIGATION -->
+<div class="top-nav">
+
+  <a
+    href="index.html"
+    class="nav-btn active"
+  >
+    App
+  </a>
+
+  <a
+    href="blog.html"
+    class="nav-btn"
+  >
+    Development Blog
+  </a>
+
+</div>
+    <!-- TITLE -->
+    <h1>
+      Rhythm Transcription System
+    </h1>
+
+    <!-- CONTROLS -->
+    <div class="controls">
+
+      <!-- RECORDING -->
+      <div class="card">
+
+        <h2>
+          Recording
+        </h2>
+
+        <div class="button-row">
+
+          <button id="recordBtn">
+            Start Recording
+          </button>
+
+          <button id="metronomeBtn">
+            Start Metronome
+          </button>
+
+        </div>
+
+        <p>
+          Status:
+          <span id="status">
+            Idle
+          </span>
+        </p>
+
+        <p class="hint">
+          SPACE = tap rhythm
+          <br>
+          ENTER = finalize phrase
+        </p>
+
+        <p class="hint">
+          The first quarter note initializes
+          the rhythmic timeline and may be
+          ignored during transcription.
+        </p>
+
+      </div>
+
+      <!-- TEMPO + METER -->
+      <div class="card">
+
+        <h2>
+          Tempo & Meter
+        </h2>
+
+        <!-- BPM -->
+        <div class="row">
+
+          <label for="bpmInput">
+            BPM
+          </label>
+
+          <input
+            type="number"
+            id="bpmInput"
+            value="120"
+            min="40"
+            max="240"
+          />
+
+          <button id="tapTempo">
+            Tap Tempo
+          </button>
+
+        </div>
+
+        <p>
+          Detected BPM:
+          <span id="bpmDisplay">
+            120
+          </span>
+        </p>
+
+        <!-- TIME SIGNATURE -->
+        <div class="row">
+
+          <label for="meter">
+            Time Signature
+          </label>
+
+          <select id="meter">
+
+            <option value="4/4">
+              4/4
+            </option>
+
+            <option value="3/4">
+              3/4
+            </option>
+
+            <option value="6/8">
+              6/8
+            </option>
+
+          </select>
+
+        </div>
+
+        <!-- MEASURES -->
+        <div class="row">
+
+          <label for="measureCount">
+            Measures
+          </label>
+
+          <input
+            type="number"
+            id="measureCount"
+            value="4"
+            min="1"
+            max="16"
+          />
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- LIVE CAPTURE -->
+    <div class="card">
+
+      <h2>
+        Live Capture
+      </h2>
+
+      <div id="log"></div>
+
+    </div>
+
+    <!-- NOTATION -->
+    <div class="card notation-card">
+
+      <h2>
+        Notation Output
+      </h2>
+
+      <div id="notation"></div>
+
+    </div>
+
+  </div>
+
+  <script src="script.js"></script>
+
+</body>
+
+</html>

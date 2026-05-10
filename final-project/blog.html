@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+  <meta charset="UTF-8" />
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  />
+
+  <title>
+    Rhythm Transcription System Blog
+  </title>
+
+  <link
+    rel="stylesheet"
+    href="style.css"
+  />
+
+</head>
+
+<body>
+
+  <div class="container">
+
+    <!-- NAVIGATION -->
+    <div class="top-nav">
+
+      <a
+        href="index.html"
+        class="nav-btn"
+      >
+        ← Back to App
+      </a>
+
+    </div>
+
+    <!-- HEADER -->
+    <header class="hero">
+
+      <h1>
+        Rhythm Transcription System
+      </h1>
+
+      <p class="subtitle">
+        Development Blog & Project Reflection
+      </p>
+
+    </header>
+
+    <!-- OVERVIEW -->
+    <section class="card">
+
+      <h2>
+        Project Overview
+      </h2>
+
+      <p>
+        This project explores the creation of a browser-based
+        rhythm transcription and notation system using
+        JavaScript, the Web Audio API, and VexFlow.
+        The application allows users to input rhythms
+        in real time through keyboard interaction and
+        dynamically converts those rhythms into symbolic
+        musical notation.
+      </p>
+
+      <p>
+        The idea for the project came from my own experiences
+        with music arranging and transcription. I often found
+        myself struggling with quickly identifying note lengths
+        and translating rhythmic ideas into sheet music.
+        Existing rhythm trainer applications inspired the
+        interaction model, but I wanted to extend the concept
+        by generating actual notation directly in the browser into
+         something that resembles sheet music more. 
+
+      </p>
+
+      <p>
+        The project focuses on bridging intuitive musical
+        performance gestures with formal notation systems.
+        In addition to rendering notation visually,
+        the system also includes tempo controls,
+        rhythmic quantization, metronome playback,
+        and automatic rhythmic grouping.
+      </p>
+
+      <p>
+        One of the central problems is rhythmic quantization. Humans are not exact robots who count beats perfectly. Because of this, the clicks that represent a value of a note must be under a certain threshold to render as said value. 
+        The first note is also quite tricky to record as the system has no reference to go off of, so theres a quarter note at the moment as a placeholder before the actual rhythym starts. 
+        I also ran into issues where I wanted to hold the spacebar for the entire duration of the note, but this led to geenration of tons of 16th notes. The code was then redone to record longer notes properly. 
+        Currently, getting vexflow to render sheet music in a presentable way is my focus, since the line bar cutoffs and engraving is quite bad. This will come with trial and error of trying various types of rhythyms. 
+      </p>
+      <p>
+        Although the current implementation focuses primarily on rhythmic transcription, one of the main future directions for the project is integrating microphone-based pitch detection through FFT analysis. The Web Audio API’s `AnalyserNode` provides access to frequency-domain data in real time, which can be used to estimate the fundamental frequency of incoming audio signals. My goal is to allow users to sing or play notes into a microphone and automatically convert those detected frequencies into symbolic pitch information that can be rendered alongside rhythm notation.
+
+The planned pitch detection pipeline would involve capturing live audio input from the microphone, passing the signal through an `AnalyserNode`, and applying FFT analysis to identify dominant frequency peaks. These frequencies could then be mapped to the nearest pitch classes and octave ranges using equal temperament calculations. This would expand the project from a rhythm-only transcription tool into a more complete browser-based music transcription environment capable of handling both temporal and melodic information.
+
+The project also incorporates a browser-based metronome built using the Web Audio API. The metronome uses an `OscillatorNode` to generate short synthesized click sounds and a `GainNode` to shape the amplitude envelope of each click. Rather than using prerecorded audio samples, the metronome synthesizes its clicks dynamically in real time through oscillator frequency control and gain ramping. The timing interval for each click is calculated directly from the selected BPM value, allowing the metronome to synchronize with the rhythm quantization system used elsewhere in the application.
+
+Using WebAudio for the metronome also introduced practical timing considerations. Browser event scheduling and audio timing are not perfectly deterministic, especially when relying on JavaScript timing functions alone. While the current implementation uses interval-based scheduling for simplicity, future versions could move toward more accurate audio scheduling techniques using `audioContext.currentTime` to achieve tighter synchronization and lower rhythmic drift.
+
+      </p>
+
+      <p>
+        This is definitely something I will continue to add on to.
+        I plan to add pitch transcription after, syncing up with the notes written.
+        This is less of a hassle when arranging though as you can sing a note
+        into any tuner and get the concert pitch. Currently there are issues with 
+        the bar lines not being perfectly aligned with the time signature. Using vexflow
+        to output music was quite tricky as the beaming for 8th and 16th notes has a lot 
+        of edge cases that make them look weird. I also want to further test rests and notes 
+        that are either tied or dotted, especially when they cross the bar line.
+      </p>
+
+    </section>
+
+    <!-- FEATURES -->
+    <section class="card">
+
+      <h2>
+        Current Features
+      </h2>
+
+      <ul class="feature-list">
+
+        <li>
+          Real-time rhythm capture using keyboard input
+        </li>
+
+        <li>
+          Rhythmic quantization into standard note values
+        </li>
+
+        <li>
+          Tempo detection using tap-tempo input
+        </li>
+
+        <li>
+          Adjustable BPM and time signatures
+        </li>
+
+        <li>
+          Dynamic notation rendering using VexFlow
+        </li>
+
+        <li>
+          Automatic beaming for rhythmic groupings
+        </li>
+
+        <li>
+          Rest detection from timing gaps
+        </li>
+
+        <li>
+          Dotted rhythm support
+        </li>
+
+        <li>
+          Adjustable measure count
+        </li>
+
+        <li>
+          Web Audio API metronome playback
+        </li>
+
+      </ul>
+
+    </section>
+
+    <!-- TECHNOLOGY -->
+    <section class="card">
+
+      <h2>
+        Technologies Used
+      </h2>
+
+      <div class="tech-grid">
+
+        <div class="tech-box">
+          <h3>HTML</h3>
+
+          <p>
+            Interface structure and layout
+          </p>
+        </div>
+
+        <div class="tech-box">
+          <h3>CSS</h3>
+
+          <p>
+            Styling, layout organization,
+            and responsive design
+          </p>
+        </div>
+
+        <div class="tech-box">
+          <h3>JavaScript</h3>
+
+          <p>
+            Event timing, quantization logic,
+            notation handling, and interaction
+          </p>
+        </div>
+
+        <div class="tech-box">
+          <h3>VexFlow</h3>
+
+          <p>
+            Rendering musical notation directly
+            in the browser
+          </p>
+        </div>
+
+        <div class="tech-box">
+          <h3>Web Audio API</h3>
+
+          <p>
+            Metronome synthesis and future
+            audio analysis expansion
+          </p>
+        </div>
+
+      </div>
+
+    </section>
+
+    <!-- DEVELOPMENT -->
+    <section class="card">
+
+      <h2>
+        Development Process
+      </h2>
+
+      <p>
+        The project began as a simple rhythm input tool
+        that recorded keyboard taps and measured the
+        spacing between them. Initially, rhythms were
+        displayed only as text labels such as quarter
+        notes or eighth notes.
+      </p>
+
+      <p>
+        From there, the system evolved into a much more
+        complicated notation-rendering project. Once
+        notation rendering was introduced through VexFlow,
+        additional challenges emerged involving rhythmic
+        spacing, beaming, measure alignment,
+        and note grouping.
+      </p>
+
+      <p>
+        One major issue involved repeated key events while
+        holding down the spacebar. The browser repeatedly
+        fired keydown events, which unintentionally generated
+        streams of short notes. This was eventually solved
+        by separating note-on and note-off behavior using
+        both keydown and keyup listeners.
+      </p>
+
+      <p>
+        Another challenge was handling rhythmic beaming.
+        At first, VexFlow generated overlapping beams and
+        note flags, creating cluttered notation. This required
+        restructuring the rendering order so beam groups
+        were attached before drawing the notes themselves.
+      </p>
+
+    </section>
+
+    <!-- WHAT I LEARNED -->
+    <section class="card">
+
+      <h2>
+        What I Learned
+      </h2>
+
+      <p>
+        This project taught me how complex symbolic music
+        notation systems actually are. At first, I assumed
+        notation rendering would mostly involve drawing note
+        symbols on a staff, but I quickly realized that
+        accurate engraving depends on timing structures,
+        measure logic, rhythmic grouping, and spacing rules.
+      </p>
+
+      <p>
+        I also gained experience with browser-based audio
+        systems through the Web Audio API. Building the
+        metronome helped me better understand oscillators,
+        gain envelopes, and real-time audio scheduling.
+      </p>
+
+      <p>
+        Working on this project also strengthened my
+        understanding of JavaScript event systems,
+        especially timing-sensitive interactions such
+        as keydown and keyup handling.
+      </p>
+
+    </section>
+
+    <!-- FUTURE WORK -->
+    <section class="card">
+
+      <h2>
+        Future Work
+      </h2>
+
+      <p>
+        I definitely want to continue expanding this
+        project beyond its current functionality.
+        One of the biggest remaining goals is implementing
+        true measure-aware notation formatting.
+        Currently, the notation system visually displays
+        barlines, but the rhythmic logic itself is not yet
+        fully organized by measure boundaries.
+      </p>
+
+      <p>
+        Future versions would split notes dynamically
+        across measures, support tied notes over barlines,
+        and automatically organize notation spacing
+        according to beat structure.
+      </p>
+
+      <p>
+        I also want to incorporate microphone-based
+        pitch detection using FFT analysis through the
+        Web Audio API’s <code>AnalyserNode</code>.
+        This would allow users to sing or play notes
+        directly into the browser and generate melodic
+        notation alongside rhythmic transcription.
+      </p>
+
+      <p>
+        Additional future goals include MIDI export,
+        playback synthesis, polyphonic transcription,
+        automatic accompaniment, and support for more
+        advanced rhythmic structures such as tuplets
+        and swing rhythms.
+      </p>
+
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+
+      <p>
+        Rhythm Transcription System
+      </p>
+
+    
+
+    </footer>
+
+  </div>
+
+</body>
+
+</html>
